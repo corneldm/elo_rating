@@ -53,7 +53,7 @@ class EloRating::Match
   # :nodoc:
     attr_reader :rating, :place, :match, :matches_played
     def initialize(match:, rating:, place: nil, winner: nil, matches_played: 0)
-      validate_attributes!(rating: rating, place: place, winner: winner)
+      validate_attributes!(rating: rating, place: place, winner: winner, matches_played: matches_played)
       @match = match
       @rating = rating
       @place = place
