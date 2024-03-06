@@ -9,23 +9,23 @@ require 'elo_rating/match'
 module EloRating
 
   # Default K-factor.
-  @k_factor = Proc.new do |rating|
+  @k_factor = Proc.new do |rating, matches_played|
     24
   end
 
   # Calls the K-factor function with the provided rating.
-  def self.k_factor(rating = nil)
-    @k_factor.call(rating)
+  def self.k_factor(rating = nil, matches_played = nil)
+    @k_factor.call(rating, matches_played)
   end
 
-  # Sets the K-factor by providing a block that optionally takes a +rating+
-  # argument:
+  # Sets the K-factor by providing a block that optionally takes a +rating+ and +matches_played+
+  # arguments:
   #
-  #   EloRating::set_k_factor do |rating|
-  #     if rating && rating > 2500
-  #       24
+  #   EloRating::set_k_factor do |rating, matches_played|
+  #     if (rating && rating > 1500) || matches_played < 10
+  #       40
   #     else
-  #       16
+  #       25
   #     end
   #   end
   #
@@ -66,8 +66,8 @@ module EloRating
   #
   # Returns a positive or negative float representing the amount the player's
   # rating should change.
-  def self.rating_adjustment(expected_score, actual_score, rating: nil, k_factor: nil)
-    k_factor ||= k_factor(rating)
+  def self.rating_adjustment(expected_score, actual_score, rating: nil, k_factor: nil, matches_played: nil)
+    k_factor ||= k_factor(rating, matches_played)
     k_factor * (actual_score - expected_score)
   end
 end

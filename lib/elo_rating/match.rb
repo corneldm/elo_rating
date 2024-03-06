@@ -51,23 +51,25 @@ class EloRating::Match
 
   class Player
   # :nodoc:
-    attr_reader :rating, :place, :match
-    def initialize(match:, rating:, place: nil, winner: nil)
+    attr_reader :rating, :place, :match, :matches_played
+    def initialize(match:, rating:, place: nil, winner: nil, matches_played: 0)
       validate_attributes!(rating: rating, place: place, winner: winner)
       @match = match
       @rating = rating
       @place = place
       @winner = winner
+      @matches_played = matches_played
     end
 
     def winner?
       @winner
     end
 
-    def validate_attributes!(rating:, place:, winner:)
+    def validate_attributes!(rating:, place:, winner:, matches_played:)
       raise ArgumentError, 'Rating must be numeric' unless rating.is_a? Numeric
       raise ArgumentError, 'Winner and place cannot both be specified' if place && winner
       raise ArgumentError, 'Place must be numeric' unless place.nil? || place.is_a?(Numeric)
+      raise ArgumentError, 'Matches Played must be numeric' unless matches_played.is_a?(Numeric)
     end
 
     def opponents
@@ -88,7 +90,8 @@ class EloRating::Match
       EloRating.rating_adjustment(
         expected_score_against(opponent),
         actual_score_against(opponent),
-        rating: rating
+        rating: rating,
+        matches_played: matches_played
       )
     end
 
